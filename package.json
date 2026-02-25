@@ -1,0 +1,27 @@
+{
+  "name": "radek-oracle-mcp",
+  "version": "1.0.0",
+  "description": "Radek Oracle MCP — Oracle 19c diagnostic server for AI tools (Claude, Cursor)",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts",
+    "token": "node dist/create-token.js",
+    "token:init": "node dist/create-token.js --init",
+    "logs": "tail -f logs/mcp-$(date +%Y-%m-%d).log 2>/dev/null || echo 'No log file for today yet'"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "jsonwebtoken": "^9.0.0",
+    "oracledb": "^6.6.0",
+    "puppeteer-core": "^24.37.5"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.7",
+    "@types/jsonwebtoken": "^9.0.0",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^5.0.0"
+  }
+}

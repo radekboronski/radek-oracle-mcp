@@ -1,0 +1,12 @@
+{
+  "auth": {
+    "secret": "64-char-hex-secret-generated-by-npm-run-token-init"
+  },
+  "server": {
+    "port": 8003,
+    "tunnel_url": "https://radek-oracle-mcp.clickchain.eu"
+  },
+  "database": {
+    "url": "oracle://user:password@host:1521/ORCL"
+  }
+}
