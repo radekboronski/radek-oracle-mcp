@@ -5,6 +5,23 @@
 process.env.NO_COLOR = '1';
 process.env.NODE_DISABLE_COLORS = '1';
 
+// Patch stdout and stderr to strip ALL ANSI escape codes at stream level,
+// regardless of source (oracledb driver, Node.js internals, etc.)
+const ANSI_RE = /\x1B\[[0-9;]*[A-Za-z]|\x1B[^[]/g;
+function patchStream(stream: NodeJS.WriteStream): void {
+  const orig = stream.write.bind(stream);
+  (stream as unknown as Record<string, unknown>).write = (chunk: unknown, ...args: unknown[]) => {
+    const cleaned = typeof chunk === 'string'
+      ? chunk.replace(ANSI_RE, '')
+      : Buffer.isBuffer(chunk)
+        ? Buffer.from(chunk.toString().replace(ANSI_RE, ''))
+        : chunk;
+    return (orig as (...a: unknown[]) => boolean)(cleaned, ...args);
+  };
+}
+patchStream(process.stdout);
+patchStream(process.stderr);
+
 import http from 'http';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
