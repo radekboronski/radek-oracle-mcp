@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 // Radek Oracle MCP — Oracle 19c diagnostic server for AI tools (Claude, Cursor)
 
+// Disable ANSI colors in all output
+process.env.NO_COLOR = '1';
+process.env.NODE_DISABLE_COLORS = '1';
+
 import http from 'http';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
@@ -89,16 +93,12 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  console.log('>>> POST /mcp');
-
   const auth = verifyToken(req);
   if (!auth.ok) {
     log.warn(`Auth failed from ${req.socket.remoteAddress ?? 'unknown'}: ${auth.error}`);
     sendJSON(res, 401, { error: auth.error });
     return;
   }
-  const decoded = auth.decoded as jwt.JwtPayload;
-  console.log(`  Auth OK: ${decoded?.name ?? decoded?.sub ?? 'unknown'}`);
 
   // DB URL from request header, fall back to config, then empty string
   const dbUrl = (req.headers['x-database-url'] as string) ?? DB_URL ?? '';
@@ -109,7 +109,6 @@ const server = http.createServer(async (req, res) => {
   catch { sendJSON(res, 400, { jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Parse error' } }); return; }
 
   const { method, id } = mcpReq;
-  console.log(`  MCP: ${method} id=${String(id)}`);
 
   const extra: Record<string, string> = {};
   if (method === 'initialize') {

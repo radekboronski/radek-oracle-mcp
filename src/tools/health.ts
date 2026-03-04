@@ -58,7 +58,7 @@ export async function health_check(dbUrl: string): Promise<Record<string, unknow
 
   // Tablespace fullness
   type TsRow = { TABLESPACE_NAME: string; PCT_USED: number };
-  const tsRows = (data.tablespaces as TsRow[]) ?? [];
+  const tsRows = Array.isArray(data.tablespaces) ? (data.tablespaces as TsRow[]) : [];
   for (const ts of tsRows) {
     if (ts.PCT_USED >= 95) {
       health_level = 'CRITICAL';

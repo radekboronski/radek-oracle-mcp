@@ -3,9 +3,9 @@
 export const waitQueries = {
 
   system_events: `
-    SELECT event, wait_class, waits, timeouts,
+    SELECT event, wait_class, total_waits, total_timeouts,
            ROUND(time_waited/100, 2) AS time_waited_secs,
-           ROUND(time_waited/NULLIF(waits,0)/100, 3) AS avg_wait_ms,
+           ROUND(time_waited/NULLIF(total_waits,0)/100, 3) AS avg_wait_ms,
            ROUND(time_waited/NULLIF(
              (SELECT SUM(time_waited) FROM v$system_event WHERE wait_class != 'Idle'), 0
            ) * 100, 1) AS pct_of_total_wait
@@ -16,9 +16,9 @@ export const waitQueries = {
 
   wait_classes: `
     SELECT wait_class, COUNT(*) AS event_count,
-           SUM(waits) AS total_waits,
+           SUM(total_waits) AS total_waits,
            ROUND(SUM(time_waited)/100, 2) AS total_secs,
-           ROUND(SUM(time_waited)/NULLIF(SUM(waits),0)/100, 3) AS avg_ms
+           ROUND(SUM(time_waited)/NULLIF(SUM(total_waits),0)/100, 3) AS avg_ms
     FROM v$system_event
     WHERE wait_class NOT IN ('Idle')
     GROUP BY wait_class
@@ -36,17 +36,17 @@ export const waitQueries = {
     FETCH FIRST 50 ROWS ONLY`,
 
   io_waits: `
-    SELECT event, waits,
+    SELECT event, total_waits,
            ROUND(time_waited/100, 2) AS time_waited_secs,
-           ROUND(time_waited/NULLIF(waits,0)/100, 3) AS avg_ms
+           ROUND(time_waited/NULLIF(total_waits,0)/100, 3) AS avg_ms
     FROM v$system_event
     WHERE wait_class IN ('User I/O','System I/O')
     ORDER BY time_waited DESC`,
 
   concurrency_waits: `
-    SELECT event, waits, timeouts,
+    SELECT event, total_waits, total_timeouts,
            ROUND(time_waited/100, 2) AS time_waited_secs,
-           ROUND(time_waited/NULLIF(waits,0)/100, 3) AS avg_ms
+           ROUND(time_waited/NULLIF(total_waits,0)/100, 3) AS avg_ms
     FROM v$system_event
     WHERE wait_class IN ('Concurrency','Application','Cluster')
     ORDER BY time_waited DESC`,

@@ -69,9 +69,9 @@ export const healthQueries = {
     ORDER BY pct_used DESC NULLS LAST`,
 
   wait_events_top: `
-    SELECT event, wait_class, waits,
+    SELECT event, wait_class, total_waits,
            ROUND(time_waited/100, 2) AS time_waited_secs,
-           ROUND(time_waited/NULLIF(waits,0)/100, 3) AS avg_wait_ms
+           ROUND(time_waited/NULLIF(total_waits,0)/100, 3) AS avg_wait_ms
     FROM v$system_event
     WHERE wait_class NOT IN ('Idle','Administrative','Configuration')
     ORDER BY time_waited DESC

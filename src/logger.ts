@@ -8,6 +8,11 @@ const LOG_DIR   = join(__dirname, '../logs');
 const MAX_BYTES = 10 * 1024 * 1024; // 10 MB — stop writing if exceeded
 const KEEP_DAYS = 7;
 
+/** Strip ANSI escape codes from a string */
+function stripAnsi(text: string): string {
+  return text.replace(/\x1B\[[0-9;]*[A-Za-z]/g, '');
+}
+
 function today(): string {
   return new Date().toISOString().slice(0, 10);
 }
@@ -54,22 +59,22 @@ function maybePrune(): void {
 
 /** Informational — stdout only, not written to file */
 export function info(message: string): void {
-  console.log(`[INFO] ${message}`);
+  console.log(`[INFO] ${stripAnsi(message)}`);
 }
 
 /** Warning — stdout + file */
 export function warn(message: string): void {
   maybePrune();
-  const line = `WARN  ${message}`;
-  console.warn(`[WARN] ${message}`);
-  writeToFile('WARN ', message);
+  const clean = stripAnsi(message);
+  console.warn(`[WARN] ${clean}`);
+  writeToFile('WARN ', clean);
 }
 
 /** Error — stdout + file */
 export function error(message: string, err?: unknown): void {
   maybePrune();
   const detail = err instanceof Error ? ` — ${err.message}` : (err ? ` — ${String(err)}` : '');
-  const line = `${message}${detail}`;
+  const line = stripAnsi(`${message}${detail}`);
   console.error(`[ERROR] ${line}`);
   writeToFile('ERROR', line);
 }
