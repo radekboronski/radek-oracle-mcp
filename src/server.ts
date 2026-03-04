@@ -121,9 +121,14 @@ const server = http.createServer(async (req, res) => {
   sendJSON(res, 200, result, extra);
 });
 
+/** Strip ANSI escape codes */
+function stripAnsi(text: string): string {
+  return text.replace(/\x1B\[[0-9;]*[A-Za-z]/g, '');
+}
+
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(BANNER_BOX);
-  console.log(`
+  console.log(stripAnsi(BANNER_BOX));
+  console.log(stripAnsi(`
   Endpoint:  http://0.0.0.0:${PORT}/mcp
   Auth:      JWT Bearer token
   Database:  dynamic via X-Database-URL request header
@@ -160,5 +165,5 @@ server.listen(PORT, '0.0.0.0', () => {
   query_tools           List all available tools
   query_queries         Example natural-language questions
   get_instructions      Return CLAUDE.md instructions
-`);
+`));
 });

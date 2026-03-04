@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "radek-oracle": {
+      "type": "http",
+      "url": "https://radek-oracle-mcp.clickchain.eu/mcp",
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiY2xpZW50Iiwic3ViIjoiY2xpZW50IiwiaWF0IjoxNzcyNjM4Mjg1LCJleHAiOjE4MDQxNzQyODV9.fzWqQqs_HyyoYk27iYIJGDwNOSBqFQ2gKtfYtUvUo4A",
+        "X-Database-URL": "oracle://system:Oracle123@localhost:1521/XEPDB1"
+      }
+    }
+  }
+}
